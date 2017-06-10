@@ -1,5 +1,5 @@
 # # # # #
-# Filename: util_ip_check.py
+# Filename: ipCheck.py
 # Author: Joshua Salzedo
 # Version 1.0
 # Function: parse Amazon region json and check specified IP
@@ -8,7 +8,7 @@
 import sys
 import ipaddress as ip #built in lib for IP handling
 import json #built in lib for JSON file handling
-from requests import get #for retrieving JSON from remote host
+
 # # # # 
 # Config
 class config(object):
@@ -35,44 +35,34 @@ def versionCheck():
 		#incorrect version, halt program execution
 		raise ValueError("This script targets python3.x.x")
 
-def retrieveJSON():
-	"""Retrieves Amazon ip-range JSON from remote host"""
-	#open JSON for writing in binary mode
-	with open(config.pathToFile,"wb") as file:
-			#execute GET request
-			response = get(config.remoteHost)
-			if response.status_code ==200:
-				print("Server returned JSON successfuly\tStatus:{}".format(response.status_code))
-			#write contents of response to file
-			file.write(response.content)
+
 # # #
 # Init
 # #
 # Check version
 versionCheck()
-# Ensure we have a clean copy when module is imported
-retrieveJSON()
+
 # #
 # End init
 #
-def parseJson(path, ip):
+def parseJson(fileObject, ip):
 	"""Parse JSON data, checking if IP exists. Returns associated prefix object"""
 	# # #
 	# load JSON into memory
-	with open(path) as data_file:
+	with fileObject as data_file:
 		data = json.load(data_file)
 	# # #
 	# Checks IP for hit against loaded JSON data
 	for entry in data[word.pref]:
 		query = isInRange(entry[word.ipPref],ip)
-		#check if an error occured
+		#check if an error occurred
 		if type(query)==int:
 			#no error, check if the return was True
 			if query:
 				return(entry)
 		else:
 			#An error object was returned from isInRange
-			print("An error occured!\nSee returned object")
+			print("An error occurred!\nSee returned object")
 			return(query)
 	#if the ip is NOT found in any ranges	
 	return(None)
@@ -96,7 +86,7 @@ def isInRange(testRange,inputValue):
 	#ip was not in range
 	return(0)
 
-def check(ip):
-	"""Accepts Str IP Adress, returns dict object"""
-	Myobject = parseJson(config.pathToFile,ip)
+def check(fileObject,ip):
+	"""Accepts Str IP Address, returns dict object"""
+	Myobject = parseJson(fileObject,ip)
 	return(Myobject)
