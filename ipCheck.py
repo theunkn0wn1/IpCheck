@@ -41,7 +41,8 @@ def retrieveJSON():
 	with open(config.pathToFile,"wb") as file:
 			#execute GET request
 			response = get(config.remoteHost)
-			
+			if response.status_code ==200:
+				print("Server returned JSON successfuly\tStatus:{}".format(response.status_code))
 			#write contents of response to file
 			file.write(response.content)
 # # #
