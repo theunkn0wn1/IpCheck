@@ -100,7 +100,3 @@ def check(ip):
 	"""Accepts Str IP Adress, returns dict object"""
 	Myobject = parseJson(config.pathToFile,ip)
 	return(Myobject)
-
-print((check('13.112.45.40')))
-print(check(ip.ip_address('13.112.45.40')))
-#print(parseJson(config.pathToFile, '13.112.45.0'))
