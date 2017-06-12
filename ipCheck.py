@@ -11,10 +11,6 @@ import json #built in lib for JSON file handling
 
 # # # # 
 # Config
-class config(object):
-	"""Stores configuration vars"""
-	pathToFile = "ip-ranges.json"
-	remoteHost = "https://ip-ranges.amazonaws.com/ip-ranges.json"
 class word():
 	"""Stores JSON words"""
 	pref = 'prefixes'
@@ -24,7 +20,7 @@ class word():
 	service = 'service'
 #
 # # #
-
+isOpen = False
 def versionCheck():
 	"""Ensures python environment is python3, or errors will occur later on"""
 	pyVersion = sys.version
@@ -47,22 +43,27 @@ versionCheck()
 #
 def parseJson(fileObject, ip):
 	"""Parse JSON data, checking if IP exists. Returns associated prefix object"""
+	global isOpen
+	global data
 	# # #
 	# load JSON into memory
-	with fileObject as data_file:
-		data = json.load(data_file)
+	#with fileObject as data_file:
+	if(not isOpen):
+		data = json.load(fileObject)
+		isOpen = not isOpen
 	# # #
 	# Checks IP for hit against loaded JSON data
 	for entry in data[word.pref]:
 		query = isInRange(entry[word.ipPref],ip)
 		#check if an error occurred
-		if type(query)==int:
+		if type(query)==bool:
 			#no error, check if the return was True
 			if query:
 				return(entry)
 		else:
 			#An error object was returned from isInRange
-			print("An error occurred!\nSee returned object")
+			print("An error occurred!\tSee returned object")
+			print("object type = {}".format(type(query)))
 			return(query)
 	#if the ip is NOT found in any ranges	
 	return(None)
@@ -81,12 +82,8 @@ def isInRange(testRange,inputValue):
 		#raise e
 		return(e) #return error object for handling
 	#test if exists
-	if (testIp in ipRange):
-		return(1)
-	#ip was not in range
-	return(0)
+	return(testIp in ipRange)
 
 def check(fileObject,ip):
 	"""Accepts Str IP Address, returns dict object"""
-	Myobject = parseJson(fileObject,ip)
-	return(Myobject)
+	return(parseJson(fileObject,ip))

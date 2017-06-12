@@ -8,5 +8,5 @@ Your script may then call
 ```Python
 IpCheck.check(fileObject,ip_address)
 ```
-The `ip_address` can be in either an `IPv4Address` object as provided by the `ipaddress` library or passed in as a string of type `str`.
-`fileObject` expects an open file object from your program, ipCheck will not automatically retrieve the file for you.
+The `ip_address` can be in either an `IPv4Address` object as provided by the `ipaddress` library or passed in as a string of type `str` that is correctly formated.
+`fileObject` expects an open file object from your program, ipCheck will not automatically retrieve the JSON file for you.
